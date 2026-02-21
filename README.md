@@ -10,11 +10,54 @@ Sockets Links.
 4. Send and receive the message using the send function in socket.
 ## PROGRAM
 Server.py:
+```
+import socket
 
-<img width="1190" height="717" alt="Screenshot 2026-02-19 160054" src="https://github.com/user-attachments/assets/286a1f08-eb25-4feb-80f6-51020ba36e39" />
+# Create socket
+server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+# Bind to localhost and port
+server_socket.bind(('127.0.0.1', 12345))
+
+# Listen for connection
+server_socket.listen(1)
+print("Server is waiting for connection...")
+
+conn, addr = server_socket.accept()
+print("Connected to:", addr)
+
+while True:
+    data = conn.recv(1024).decode()
+    if not data:
+        break
+    print("Client:", data)
+    conn.send(data.encode())  # Echo back
+
+conn.close()
+server_socket.close()
+```
 Client.py:
+```
+import socket
 
-<img width="987" height="549" alt="Screenshot 2026-02-19 160102" src="https://github.com/user-attachments/assets/b68ef192-3a09-4210-ac2d-8c713bee79bb" />
+# Create socket
+client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+# Connect to server
+client_socket.connect(('127.0.0.1', 12345))
+
+while True:
+    msg = input("Enter message: ")
+    client_socket.send(msg.encode())
+
+    data = client_socket.recv(1024).decode()
+    print("Server echoed:", data)
+
+    if msg.lower() == "exit":
+        break
+
+client_socket.close()
+```
 
 
 ## OUPUT
